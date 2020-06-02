@@ -80,5 +80,81 @@ let isFistInStock = fp.flowRight(fp.prop('in_stock'), fp.first)
 console.log(isFistInStock(cars)) // true
 ```
 
-## 代码题2
+### 练习3
+```js
+let _average = function (xs) {
+  return fp.reduce(fp.add, 0, xs) / xs.length
+}
+let averageDollarValue = fp.flowRight(_average, fp.map(car => car.dollar_value))
+console.log(averageDollarValue(cars)) // 790700
+```
 
+### 练习4
+```js
+let _underscore = fp.replace(/\W+/g, '_')
+
+let sanitizeNames = fp.map(item => fp.flowRight(fp.toLower, _underscore)(item))
+console.log(sanitizeNames(['Hello World', 'Greeting Will'])) // [ 'hello_world', 'greeting_will' ]
+```
+
+## 代码题2
+### 练习1
+```js
+class Container {
+  static of (value) {
+    return new Container(value)
+  }
+  constructor(value) {
+    this._value = value
+  }
+  map (fn) {
+    return Container.of(fn(this._value))
+  }
+}
+
+class Maybe {
+  static of (x) {
+    return new Maybe(x)
+  }
+  isNothing () {
+    return this._value === null || this._value === undefined
+  }
+  constructor(x) {
+    this._value = x
+  }
+  map (fn) {
+    return this.isNothing() ? this : Maybe.of(fn(this._value))
+  }
+}
+
+// 使用fp.add(x, y)和fp.map(f, x)创建 一个能让functor里的值增加的函数ex1
+let maybe = Maybe.of([5, 6, 1])
+const func = x => fp.add(x, 1)
+let ex1 = maybe.map(x => fp.map(func)(x))
+console.log(ex1) // Maybe { _value: [ 6, 7, 2 ] }
+```
+
+### 练习2
+```js
+let xs = Container.of(['do', 'ray', 'me'])
+let ex2 = xs.map(x => fp.first(x))
+console.log(ex2) // Container { _value: 'do' }
+```
+
+### 练习3
+```js
+let safeProp = fp.curry(function (x, o) {
+  return Maybe.of(o[x])
+})
+let user = { id: 2, name: 'Albert' }
+let ex3 = safeProp('name')(user).map(x => fp.first(x))
+console.log(ex3) // Maybe { _value: 'A' }
+```
+
+### 练习4
+```js
+let ex4 = function (n) {
+  return Maybe.of(n).map(x => parseInt(x))
+}
+console.log(ex4('14')) // Maybe { _value: 14 }
+```
