@@ -21,8 +21,8 @@
 ## 编程题
 
 1. 概述脚手架实现的过程，并使用NodeJS完成一一个自定义的小型脚手架工具
-    [Nodejs自定义脚手架](./code/scaffolding)
+    [Nodejs自定义脚手架](https://github.com/oovwall/scaffolding)
 2. 尝试使用Gulp完成项目的自动化构建
-    [Gulp自动化构建](./code/gulp-test)
+    [Gulp自动化构建](https://github.com/oovwall/gulp-test)
 3. 使用Grunt完成项目的自动化构建
-    [Grunt自动化构建](./code/grunt-test)
+    [Grunt自动化构建](https://github.com/oovwall/grunt-test)
