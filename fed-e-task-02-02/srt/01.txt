@@ -1,0 +1,11 @@
+作业脚本
+
+实现思路：
+这是一个webapck处理vue的项目，除了处理普通的js文件之外，我们需要用到一些Loader处理HTML文件，css文件，Less文件，图片文件。那我们依次安装babel-loader、css-loader、less-loader、style-loader、file-loader、url-loader，由于babel-loader需要用到babel内核以及一些预设置，我们还要安装@babel/core、@babel/preset-env。要处理HTML文件，我们需要用到html-webpack-plugin，要清除打包目录需要用到clean-webpack-plugin等插件。
+
+那在这个项目当中，我们把配置文件分成了三个，一个通用型的文件，一个是开发环境用到的配置文件，另一个是生产环境打包用到的配置文件，那把它们分别存在不同的文件中。让我们先从通用配置文件开始看。在这里我们定义一个入口，main.js。在输出配置中我们定义了8位的哈希值，来区分，不同修改时生成不同的文件，避免缓存问题。接下来我们用不同的Loader来处理不同的文件，当匹配到less文件时，分别用less-loader、css-loader、style-loader去处理它们，这里的use属性是一个数组，分别从后前执行。匹配到图片文件时，我们用两个不同的loader来处理它们，当图片文件不足10kb时，用url-loader把图片文件转成base64的文件URL，来减少对服务器的请求，大于10KB的图片文件我们依然用file-loader进行处理。匹配vue文件时，除用vue-loader处理之外，还要配置vue-loader plugin的插件，这是vue官方给我们的解决方法。html文件我们用html-webpack-plugin插件进行处理，在这里配置好模板的路径、开启热更新模块。
+
+现在来看开发环境的配置文件，在这里我们先引入通用的配置文件。还需要用到一个webpack-merge的插件，这个插件可以帮助我们把之前的通用配置和现在这个文件中定义的配置对象合并。在这个对象中，我们定义mode为development，devServer开启热更新方便我们开发调试。同时还需要用一个webpack内置插件DefinePlugin定义BASE_URL来替换index.html中favicon.ico文件前的路径。在生产环境的配置文件中，我们把devtool设置成false，这样就可以禁用source map，在这里我们在optimization里面设置了一些参数来优化我们打包的设置。由于我们把public下面的文件都复制到dist的目录下，那这里需要重新设置一下BASE_URL以确保打包后favicon.ico可以正常加载。整个项目的思路就介绍到这里。
+
+功能演示：
+下面，我作一下功能演示，这里我们来运行yarn serve命令。这里会启动webpack-dev-server服务器，在localhost的8080端口，让我们直接打开。图片显示没有问题，还有favicon.ico文件都能正常的显示。在这里我们更改一下代码，能看到正常的热更新。再多加几行回车，提示eslint错误，证明eslint-loader已经工作。再测试一下yarn build命令。目录下会生成dist文件夹，这里的html是压缩过的，js文件也是压缩过的，同时带了8位的哈希值。那我们用serve dist命令启动，打开localhost:5000，能够正常显示。最后我们来测试一下yarn lint命令，随便更改一点东西。加下分号和加几个回车，这个命令可以完好的修复，支持这个项目，就演示完了，谢谢。
